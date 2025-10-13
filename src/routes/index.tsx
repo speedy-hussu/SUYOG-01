@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-router";
 import RootLayout from "./__root";
 import Login from "../pages/Login";
-import Dashboard from "../pages/Dashboard";
+import Dashboard from "@/pages/Dashboard";
 
 // 1. Create the root route
 const rootRoute = createRootRoute({
@@ -28,9 +28,6 @@ const dashboardRoute = createRoute({
 // const dashboardRoute = createRoute({ getParentRoute: () => rootRoute, path: "/dashboard", component: Dashboard })
 
 // 4. Build the route tree
-const routeTree = rootRoute.addChildren([
-  loginRoute,
-  dashboardRoute,
-]);
+const routeTree = rootRoute.addChildren([loginRoute, dashboardRoute]);
 
 export const router = createRouter({ routeTree });

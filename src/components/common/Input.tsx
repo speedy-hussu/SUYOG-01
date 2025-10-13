@@ -45,7 +45,7 @@ const Input: React.FC<InputProps> = ({
               edge="end"
               sx={{
                 color: "var(--primary)",
-                "&:hover": { backgroundColor: "rgba(0,0,0,.04)" },
+                "&:hover": { backgroundColor: "#0000000a" },
               }}
             >
               {showPassword ? <VisibilityOff /> : <Visibility />}

@@ -1,11 +1,13 @@
-import AppHeader from "../components/Header";
-import Sidebar from "../components/Sidebar";
-
-export default function Dashboard() {
+import { EmployeeFormModal } from "@/components/EmployeeFormModal";
+import Layout from "./Layout";
+function Dashboard() {
   return (
-    <div className="h-full w-full flex">
-      <Sidebar />
-      <AppHeader />
-    </div>
+    <Layout>
+      <div className="bg-gray-100">
+        <EmployeeFormModal />
+      </div>
+    </Layout>
   );
 }
+
+export default Dashboard;
