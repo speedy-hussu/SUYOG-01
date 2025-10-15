@@ -100,7 +100,7 @@ export function EmployeeFormModal() {
     <Dialog>
       <DialogTrigger asChild>
         <Button>
-          <UserPlus className="size-5" />
+          <UserPlus />
           Add
         </Button>
       </DialogTrigger>

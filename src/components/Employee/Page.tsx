@@ -1,4 +1,3 @@
-import { EmployeeFormModal } from "../EmployeeFormModal";
 import { employeeColumns, type Employee } from "./Columns";
 import { DataTable } from "./DataTable";
 
@@ -190,7 +189,6 @@ export default function EmployeePage() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold mb-4">Employee Table</h1>
-        <EmployeeFormModal />
       </div>
 
       <DataTable columns={employeeColumns} data={data} />

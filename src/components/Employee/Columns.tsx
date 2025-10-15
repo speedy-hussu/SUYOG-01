@@ -1,22 +1,14 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 
 // Define your Employee type
 export type Employee = {
@@ -64,74 +56,14 @@ export const employeeColumns: ColumnDef<Employee>[] = [
   },
   {
     accessorKey: "shift",
-    header: ({ column }) => {
-      const options = ["Morning", "Evening", "Night"];
-
-      return (
-        <div className="flex flex-col gap-1">
-          <span className="font-medium">Shift</span>
-          <Select
-            onValueChange={(value) =>
-              column.setFilterValue(value === "All" ? undefined : value)
-            }
-          >
-            <SelectTrigger className="w-[120px] h-8">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="All">All</SelectItem>
-              {options.map((shift) => (
-                <SelectItem key={shift} value={shift}>
-                  {shift}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      );
-    },
-    enableColumnFilter: true,
+    header: "Shift",
     cell: (info) => info.getValue(),
   },
   {
     accessorKey: "role",
-    header: ({ column, table }) => {
-      const uniqueRoles = Array.from(
-        new Set(
-          table
-            .getPreFilteredRowModel()
-            .rows.map((row) => row.getValue("role") as string) // 👈 cast to string
-        )
-      ).filter(Boolean); // removes undefined/null if any
-
-      return (
-        <div className="flex flex-col gap-1">
-          <span className="font-medium">Role</span>
-          <Select
-            value={column.getFilterValue() as string | undefined}
-            onValueChange={(value) =>
-              column.setFilterValue(value === "All" ? undefined : value)
-            }
-          >
-            <SelectTrigger className="w-[120px] h-8">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="All">All</SelectItem>
-              {uniqueRoles.map((role) => (
-                <SelectItem key={role} value={role}>
-                  {role}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      );
-    },
-    enableColumnFilter: true,
+    header: "Role",
     cell: (info) => info.getValue(),
   },
-
   {
     id: "actions",
     cell: () => {
@@ -145,7 +77,6 @@ export const employeeColumns: ColumnDef<Employee>[] = [
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem>View Details</DropdownMenuItem>
             <DropdownMenuItem>Edit</DropdownMenuItem>
             <DropdownMenuSeparator />
