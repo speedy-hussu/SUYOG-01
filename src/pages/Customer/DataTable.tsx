@@ -1,6 +1,18 @@
 import * as React from "react";
-import type { ColumnDef, SortingState } from "@tanstack/react-table";
+import type {
+  ColumnDef,
+  SortingState,
+  ColumnFiltersState,
+} from "@tanstack/react-table";
 import { FileUp } from "lucide-react";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import {
   flexRender,
@@ -10,6 +22,7 @@ import {
   getPaginationRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
+
 import {
   Table,
   TableBody,
@@ -20,93 +33,98 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "../ui/scroll-area";
-import { EmployeeFormModal } from "../EmployeeFormModal";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { CustomerFormModal } from "@/components/forms/CustomerFormModal"; // ✅ your modal component
 
-import { Combobox } from "../common/SelectCombobox";
-
-// Define types
+// Props Type
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+// ✅ Customer Data Table Component
+export function CustomerDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [nameFilter, setNameFilter] = React.useState("");
-  const [roleFilter, setRoleFilter] = React.useState("");
-  const [shiftFilter, setShiftFilter] = React.useState("");
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [globalFilter, setGlobalFilter] = React.useState("");
 
+  // ✅ Table configuration
   const table = useReactTable({
     data,
     columns,
-    state: { sorting },
+    state: {
+      sorting,
+      columnFilters,
+      globalFilter,
+    },
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: "includesString", // simple string matching
   });
-
-  // Apply filters manually
-  React.useEffect(() => {
-    table.getColumn("name")?.setFilterValue(nameFilter);
-    table.getColumn("role")?.setFilterValue(roleFilter);
-    table.getColumn("shift")?.setFilterValue(shiftFilter);
-  }, [nameFilter, roleFilter, shiftFilter, table]);
-
-  const roleOptions = [
-    { value: "", label: "All Roles" },
-    { value: "Admin", label: "Admin" },
-    { value: "Manager", label: "Manager" },
-    { value: "Employee", label: "Employee" },
-  ];
-
-  const shiftOptions = [
-    { value: "", label: "All Shifts" },
-    { value: "Morning", label: "Morning" },
-    { value: "Evening", label: "Evening" },
-    { value: "Night", label: "Night" },
-  ];
 
   return (
     <div>
-      <div className="flex py-2 gap-5">
+      {/* ✅ Filters and Actions */}
+      <div className="flex py-2 gap-5 items-center">
+        {/* Global Search */}
         <Input
-          placeholder="Filter by name..."
-          value={nameFilter}
-          onChange={(e) => setNameFilter(e.target.value)}
+          placeholder="Search by name or phone..."
+          value={globalFilter ?? ""}
+          onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm"
         />
 
-        <Combobox
-          options={shiftOptions}
-          placeholder="Filter by shift"
-          selectedValue={shiftFilter}
-          onValueChange={(val) => setShiftFilter(val)}
-        />
-        <Combobox
-          options={roleOptions}
-          placeholder="Filter by role"
-          selectedValue={roleFilter}
-          onValueChange={(val) => setRoleFilter(val)}
-        />
-        <EmployeeFormModal />
+        {/* Order Status Filter (ShadCN Select) */}
+        <Select
+          value={
+            (table.getColumn("order_status")?.getFilterValue() as string) ??
+            "All"
+          }
+          onValueChange={(value) =>
+            table
+              .getColumn("order_status")
+              ?.setFilterValue(value === "All" ? undefined : value)
+          }
+        >
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="All Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Status</SelectItem>
+            <SelectItem value="Pending">Pending</SelectItem>
+            <SelectItem value="Processing">Processing</SelectItem>
+            <SelectItem value="Completed">Completed</SelectItem>
+            <SelectItem value="Cancelled">Cancelled</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Add Customer Modal */}
+        <CustomerFormModal />
+
+        {/* Export Button */}
         <Button className="bg-white border border-gray-400 text-gray-600">
           Export
-          <FileUp className="text-gray-500" />
+          <FileUp className="ml-2 text-gray-500 h-4 w-4" />
         </Button>
       </div>
 
-      <ScrollArea className="h-100">
+      {/* ✅ Scrollable Table */}
+      <ScrollArea className="h-100 ">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((hg) => (
-              <TableRow key={hg.id}>
-                {hg.headers.map((header) => (
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
@@ -119,6 +137,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
@@ -139,7 +158,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No employees found.
+                  No customers found.
                 </TableCell>
               </TableRow>
             )}
@@ -147,6 +166,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </ScrollArea>
 
+      {/* ✅ Pagination Controls */}
       <div className="flex items-center justify-end space-x-2 p-2">
         <Button
           variant="outline"

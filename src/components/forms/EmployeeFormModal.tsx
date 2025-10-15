@@ -28,9 +28,9 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-import { Calendar } from "./ui/calendar";
+import { Calendar } from "../ui/calendar";
 import { CalendarIcon, UserPlus } from "lucide-react";
 import { format } from "date-fns/format";
 
@@ -101,7 +101,7 @@ export function EmployeeFormModal() {
       <DialogTrigger asChild>
         <Button>
           <UserPlus />
-          Add
+          Add Employee
         </Button>
       </DialogTrigger>
 

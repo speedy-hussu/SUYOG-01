@@ -6,7 +6,9 @@ import {
 import RootLayout from "./__root";
 import Login from "../pages/Login";
 import Dashboard from "@/pages/Dashboard";
-import EmployeeMaster from "@/pages/EmployeeMaster";
+import EmployeeMaster from "@/pages/Employee/EmployeeMaster";
+import CustomerMaster from "@/pages/Customer/CustomerMaster";
+import VendorMaster from "@/pages/Vendor/VendorMaster";
 
 // 1. Create the root route
 const rootRoute = createRootRoute({
@@ -29,6 +31,16 @@ const EmployeeRoute = createRoute({
   path: "/employees",
   component: EmployeeMaster,
 });
+const CustomerRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/customers",
+  component: CustomerMaster,
+});
+const VendorRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/vendors",
+  component: VendorMaster,
+});
 
 // 3. Add more routes as needed:
 // const dashboardRoute = createRoute({ getParentRoute: () => rootRoute, path: "/dashboard", component: Dashboard })
@@ -38,6 +50,8 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   dashboardRoute,
   EmployeeRoute,
+  CustomerRoute,
+  VendorRoute,
 ]);
 
 export const router = createRouter({ routeTree });
