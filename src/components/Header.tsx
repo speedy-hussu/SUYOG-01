@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { SidebarTrigger } from "./ui/sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,13 +26,23 @@ const AppHeader: React.FC = () => {
 
   return (
     <header
-      className={`border-b border-gray-300 p-2 px-2 w-full sticky top-0 bg-white flex flex-col  border-gray-200 
+      className={`  border-b border-gray-300 p-1 px-2 w-full sticky top-0 bg-white items-center flex justify-between border-gray-200 
         dark:border-gray-800 dark:bg-gray-900 lg:border-b transition-all duration-300 ease-in-out`}
     >
-      <div className=" flex items-center justify-between grow lg:flex-row  ">
+      {" "}
+      <Breadcrumb className="mt-1 ">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Dashboard</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <div className=" flex items-center justify-between  lg:flex-row  ">
         <div className=" flex items-center justify-between w-full gap-2  border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 ">
-          <SidebarTrigger />
-
           <div className="">
             <form>
               <div className="relative">
@@ -70,21 +79,7 @@ const AppHeader: React.FC = () => {
             </form>
           </div>
         </div>
-        <div
-          className={` items-center justify-between w-full gap-4 px-5 py-2 flex shadow-theme-md justify-end :px-0 :shadow-none`}
-        ></div>
       </div>
-      <Breadcrumb className="mt-1 ">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Dashboard</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
     </header>
   );
 };

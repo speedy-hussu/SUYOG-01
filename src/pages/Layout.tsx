@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="w-full">
         <AppHeader />
 
-        <main className=" w-full h-dvh">{children}</main>
+        <main className=" w-full h-[calc(100dvh-45px)]">{children}</main>
       </div>
     </SidebarProvider>
   );

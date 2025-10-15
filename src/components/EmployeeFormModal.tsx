@@ -28,27 +28,38 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+
+import { Calendar } from "./ui/calendar";
+import { CalendarIcon, UserPlus } from "lucide-react";
+import { format } from "date-fns/format";
 
 // Define schema with Zod
 const formSchema = z.object({
-  employee_code: z.string(),
-  first_name: z.string(),
-  last_name: z.string(),
-  date_of_birth: z.string().optional(),
-  gender: z.string().optional(),
-  branch_id: z.string().optional(),
-  joining_date: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.string().email().optional(),
-  address_line1: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  pincode: z.string().optional(),
-  emergency_contact_name: z.string().optional(),
-  emergency_contact_phone: z.string().optional(),
-  aadhar_number: z.string().optional(),
+  employee_code: z.string().min(1, "Employee code is required"),
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
+  date_of_birth: z.string().min(1, "Date of birth is required"),
+  gender: z.string().min(1, "Gender is required"),
+  branch_id: z.string().min(1, "Branch ID is required"),
+  joining_date: z.string().min(1, "Joining date is required"),
+  phone: z.string().min(1, "Phone is required"),
+  email: z.string().email("Invalid email").min(1, "Email is required"),
+  address_line1: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  pincode: z.string().min(1, "Pincode is required"),
+  emergency_contact_name: z
+    .string()
+    .min(1, "Emergency contact name is required"),
+  emergency_contact_phone: z
+    .string()
+    .min(1, "Emergency contact phone is required"),
+  aadhar_number: z.string().min(1, "Aadhar number is required"),
+  bank_account_number: z.string().min(1, "Bank account number is required"),
+
+  // Optional fields
   pan_number: z.string().optional(),
-  bank_account_number: z.string().optional(),
   bank_ifsc: z.string().optional(),
 });
 
@@ -61,7 +72,24 @@ export function EmployeeFormModal() {
       employee_code: "",
       first_name: "",
       last_name: "",
+      date_of_birth: "",
+      gender: "",
+      branch_id: "",
+      joining_date: "",
+      phone: "",
+      email: "",
+      address_line1: "",
+      city: "",
+      state: "",
+      pincode: "",
+      emergency_contact_name: "",
+      emergency_contact_phone: "",
+      aadhar_number: "",
+      bank_account_number: "",
+      pan_number: "",
+      bank_ifsc: "",
     },
+    mode: "onBlur",
   });
 
   const onSubmit = (values: EmployeeFormValues) => {
@@ -71,10 +99,13 @@ export function EmployeeFormModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Add New Employee</Button>
+        <Button>
+          <UserPlus className="size-5" />
+          Add
+        </Button>
       </DialogTrigger>
 
-      <DialogContent className="w-7xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Add New Employee</DialogTitle>
         </DialogHeader>
@@ -90,7 +121,7 @@ export function EmployeeFormModal() {
           >
             {/* Employee Info */}
             <fieldset className="border p-4 rounded-md">
-              <legend className="text-blue-600 font-semibold">
+              <legend className="text-[#23445f] font-semibold">
                 Employee Info
               </legend>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
@@ -137,15 +168,42 @@ export function EmployeeFormModal() {
                   control={form.control}
                   name="date_of_birth"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel>Date of Birth</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className=" justify-start text-left font-normal"
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {field.value ? (
+                                format(new Date(field.value), "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={
+                              field.value ? new Date(field.value) : undefined
+                            }
+                            onSelect={(date) => {
+                              field.onChange(date?.toISOString());
+                            }}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="gender"
@@ -176,7 +234,7 @@ export function EmployeeFormModal() {
 
             {/* Employment Details */}
             <fieldset className="border p-4 rounded-md">
-              <legend className="text-blue-600 font-semibold">
+              <legend className="text-[#23445f] font-semibold">
                 Employment Details
               </legend>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
@@ -197,11 +255,37 @@ export function EmployeeFormModal() {
                   control={form.control}
                   name="joining_date"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel>Joining Date</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className=" justify-start text-left font-normal"
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {field.value ? (
+                                format(new Date(field.value), "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={
+                              field.value ? new Date(field.value) : undefined
+                            }
+                            onSelect={(date) => {
+                              field.onChange(date?.toISOString());
+                            }}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -211,7 +295,7 @@ export function EmployeeFormModal() {
 
             {/* Contact Info */}
             <fieldset className="border p-4 rounded-md">
-              <legend className="text-blue-600 font-semibold">
+              <legend className="text-[#23445f] font-semibold">
                 Contact Info
               </legend>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
@@ -298,7 +382,7 @@ export function EmployeeFormModal() {
 
             {/* Emergency Contact */}
             <fieldset className="border p-4 rounded-md">
-              <legend className="text-blue-600 font-semibold">
+              <legend className="text-[#23445f] font-semibold">
                 Emergency Contact
               </legend>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
@@ -333,7 +417,7 @@ export function EmployeeFormModal() {
 
             {/* Bank & ID Info */}
             <fieldset className="border p-4 rounded-md">
-              <legend className="text-blue-600 font-semibold">
+              <legend className="text-[#23445f] font-semibold">
                 Bank & ID Info
               </legend>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
@@ -396,7 +480,9 @@ export function EmployeeFormModal() {
             <div className="flex justify-end gap-4">
               <Button type="submit">Submit</Button>
               <DialogTrigger asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" onClick={() => form.reset()}>
+                  Cancel
+                </Button>
               </DialogTrigger>
             </div>
           </form>

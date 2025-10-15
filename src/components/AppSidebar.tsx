@@ -11,6 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -18,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronUp, User2 } from "lucide-react";
 // Menu items.
 const sidebarMenu = [
@@ -78,53 +80,41 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuButton>
-            <h1 className="text-xl font-bold">Suyog</h1>
-          </SidebarMenuButton>
-        </SidebarMenu>
+        <SidebarTrigger className="w-8" />
       </SidebarHeader>
 
-      <SidebarContent
-        className="
-    
-    scrollbar-thin
-    scrollbar-thumb-rounded
-    scrollbar-thumb-gray-400
-    [&::-webkit-scrollbar]:w-0.5
-    [&::-webkit-scrollbar-thumb]:bg-gray-200
-    [&::-webkit-scrollbar-thumb]:rounded-full
-  "
-      >
-        {sidebarMenu.map((group) => (
-          <SidebarGroup key={group.title}>
-            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.items.map((item) => {
-                  const LucideIcon = Icons[
-                    item.icon as keyof typeof Icons
-                  ] as React.ElementType;
+      <ScrollArea className="overflow-y-auto ">
+        <SidebarContent>
+          {sidebarMenu.map((group) => (
+            <SidebarGroup key={group.title}>
+              <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {group.items.map((item) => {
+                    const LucideIcon = Icons[
+                      item.icon as keyof typeof Icons
+                    ] as React.ElementType;
 
-                  return (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <a
-                          href={item.url}
-                          className="flex items-center gap-2 text-sm"
-                        >
-                          <LucideIcon className="w-4 h-4" />
-                          <span>{item.title}</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
-      </SidebarContent>
+                    return (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild>
+                          <a
+                            href={item.url}
+                            className="flex items-center gap-2 text-sm"
+                          >
+                            <LucideIcon className="w-4 h-4" />
+                            <span>{item.title}</span>
+                          </a>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
+        </SidebarContent>
+      </ScrollArea>
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
