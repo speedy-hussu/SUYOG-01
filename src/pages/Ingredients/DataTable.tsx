@@ -1,3 +1,4 @@
+// src/components/tables/IngredientDataTable.tsx
 import * as React from "react";
 import type {
   ColumnDef,
@@ -5,14 +6,6 @@ import type {
   ColumnFiltersState,
 } from "@tanstack/react-table";
 import { FileUp } from "lucide-react";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import {
   flexRender,
@@ -34,16 +27,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CustomerFormModal } from "@/components/forms/CustomerFormModal"; // ✅ your modal component
+import { Combobox } from "@/components/common/SelectCombobox";
+import IngredientFormModal from "@/components/forms/IngredientFormModal";
 
-// Props Type
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-// ✅ Customer Data Table Component
-export function CustomerDataTable<TData, TValue>({
+export function IngredientDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -53,15 +45,10 @@ export function CustomerDataTable<TData, TValue>({
   );
   const [globalFilter, setGlobalFilter] = React.useState("");
 
-  // ✅ Table configuration
   const table = useReactTable({
     data,
     columns,
-    state: {
-      sorting,
-      columnFilters,
-      globalFilter,
-    },
+    state: { sorting, columnFilters, globalFilter },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
@@ -69,57 +56,65 @@ export function CustomerDataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    globalFilterFn: "includesString", // simple string matching
+    globalFilterFn: (row, filterValue) => {
+      const name = row.getValue("ingredient_name") as string;
+      const id = row.getValue("id") as string;
+      const filter = (filterValue as string).toLowerCase();
+
+      return (
+        name.toLowerCase().includes(filter) || id.toLowerCase().includes(filter)
+      );
+    },
   });
+
+  // ✅ Category filter options for Combobox
+  const categoryOptions = [
+    { value: "", label: "All Categories" },
+    { value: "Vegetable", label: "Vegetable" },
+    { value: "Fruit", label: "Fruit" },
+    { value: "Dairy", label: "Dairy" },
+    { value: "Spices", label: "Spices" },
+    { value: "Grains", label: "Grains" },
+  ];
 
   return (
     <div>
       {/* ✅ Filters and Actions */}
       <div className="flex py-2 gap-5 items-center">
-        {/* Global Search */}
+        {/* Search Filter - Only affects name and ID */}
         <Input
-          placeholder="Search by name or phone..."
+          placeholder="Search by name or ID..."
           value={globalFilter ?? ""}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm"
         />
 
-        {/* Order Status Filter (ShadCN Select) */}
-        <Select
-          value={
-            (table.getColumn("order_status")?.getFilterValue() as string) ??
-            "All"
+        {/* Category Combobox Filter - Independent filter */}
+        <Combobox
+          options={categoryOptions}
+          placeholder="Filter by category"
+          selectedValue={
+            (table.getColumn("category")?.getFilterValue() as string) ?? ""
           }
           onValueChange={(value) =>
             table
-              .getColumn("order_status")
-              ?.setFilterValue(value === "All" ? undefined : value)
+              .getColumn("category")
+              ?.setFilterValue(value === "" ? undefined : value)
           }
-        >
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="All Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All Status</SelectItem>
-            <SelectItem value="Pending">Pending</SelectItem>
-            <SelectItem value="Processing">Processing</SelectItem>
-            <SelectItem value="Completed">Completed</SelectItem>
-            <SelectItem value="Cancelled">Cancelled</SelectItem>
-          </SelectContent>
-        </Select>
+        />
 
-        {/* Add Customer Modal */}
-        <CustomerFormModal />
+        {/* Add Ingredient Modal */}
+        <IngredientFormModal />
 
         {/* Export Button */}
-        <Button className="bg-white  border border-gray-400 text-gray-600">
+        <Button className="bg-white border border-gray-400 text-gray-600">
           Export
           <FileUp className="ml-2 text-gray-500 h-4 w-4" />
         </Button>
       </div>
 
-      {/* ✅ Scrollable Table */}
-      <ScrollArea className="h-100 ">
+      {/* ✅ Table */}
+      <ScrollArea className="h-100">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -158,7 +153,7 @@ export function CustomerDataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No customers found.
+                  No ingredients found.
                 </TableCell>
               </TableRow>
             )}
@@ -166,7 +161,7 @@ export function CustomerDataTable<TData, TValue>({
         </Table>
       </ScrollArea>
 
-      {/* ✅ Pagination Controls */}
+      {/* ✅ Pagination */}
       <div className="flex items-center justify-end space-x-2 p-2">
         <Button
           variant="outline"

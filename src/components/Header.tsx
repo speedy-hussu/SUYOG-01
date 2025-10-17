@@ -4,9 +4,9 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { ModeToggle } from "./common/ThemeToggle";
 const AppHeader: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,8 +26,8 @@ const AppHeader: React.FC = () => {
 
   return (
     <header
-      className={`  border-b border-gray-300 p-1 px-2 w-full sticky top-0 bg-white items-center flex justify-between border-gray-200 
-        dark:border-gray-800 dark:bg-gray-900 lg:border-b transition-all duration-300 ease-in-out`}
+      className={`  border-b border-gray-300 p-1 px-2 w-full sticky top-0  items-center flex justify-between 
+        bg-black lg:border-b transition-all duration-300 ease-in-out`}
     >
       {" "}
       <Breadcrumb className="mt-1 ">
@@ -37,7 +37,19 @@ const AppHeader: React.FC = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Dashboard</BreadcrumbPage>
+            <BreadcrumbLink href="/customers">Customers</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/employees">Employees</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/Vendors">Vendors</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/Ingredients">Ingredients</BreadcrumbLink>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -80,6 +92,7 @@ const AppHeader: React.FC = () => {
           </div>
         </div>
       </div>
+      <ModeToggle />
     </header>
   );
 };

@@ -65,7 +65,7 @@ const formSchema = z.object({
 
 type EmployeeFormValues = z.infer<typeof formSchema>;
 
-export function EmployeeFormModal() {
+export default function EmployeeFormModal() {
   const form = useForm<EmployeeFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {

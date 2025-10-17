@@ -9,6 +9,7 @@ import Dashboard from "@/pages/Dashboard";
 import EmployeeMaster from "@/pages/Employee/EmployeeMaster";
 import CustomerMaster from "@/pages/Customer/CustomerMaster";
 import VendorMaster from "@/pages/Vendor/VendorMaster";
+import IngredientMaster from "@/pages/Ingredients/IngredientMaster";
 
 // 1. Create the root route
 const rootRoute = createRootRoute({
@@ -41,6 +42,11 @@ const VendorRoute = createRoute({
   path: "/vendors",
   component: VendorMaster,
 });
+const IngredientRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/ingredients",
+  component: IngredientMaster,
+});
 
 // 3. Add more routes as needed:
 // const dashboardRoute = createRoute({ getParentRoute: () => rootRoute, path: "/dashboard", component: Dashboard })
@@ -50,6 +56,7 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   dashboardRoute,
   EmployeeRoute,
+  IngredientRoute,
   CustomerRoute,
   VendorRoute,
 ]);

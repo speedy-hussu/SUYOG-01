@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setNameFilter,
-    globalFilterFn: (row, columnId, filterValue) => {
+    globalFilterFn: (row, filterValue) => {
       // ✅ Three parameters
       const name = row.getValue("name")?.toString().toLowerCase() ?? "";
       const id = row.getValue("id")?.toString().toLowerCase() ?? "";

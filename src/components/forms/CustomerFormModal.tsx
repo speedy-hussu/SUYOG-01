@@ -95,7 +95,7 @@ export function CustomerFormModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="dark:text-white">
           <UserPlus />
           Add Customer
         </Button>
@@ -470,7 +470,9 @@ export function CustomerFormModal() {
 
             {/* Buttons */}
             <div className="flex justify-end gap-4">
-              <Button type="submit">Submit</Button>
+              <Button className="dark:text-white" type="submit">
+                Submit
+              </Button>
               <DialogTrigger asChild>
                 <Button variant="outline" onClick={() => form.reset()}>
                   Cancel
