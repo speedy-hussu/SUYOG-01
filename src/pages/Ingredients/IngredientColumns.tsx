@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { ActionsColumn } from "@/components/ui/columns";
+import { ActionsColumn } from "@/components/common/columns";
 export type Ingredient = {
   id: string;
   ingredient_name: string;
@@ -23,5 +23,5 @@ export const ingredientColumns: ColumnDef<Ingredient>[] = [
     cell: ({ getValue }) => `₹${getValue<number>().toFixed(2)}`,
   },
 
-  ActionsColumn<Ingredient>(),
+  ActionsColumn<Ingredient>('ingredient_name'),
 ];

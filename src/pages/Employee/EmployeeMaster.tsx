@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/common/data-table";
 import { EmployeeFormModal } from "@/components/forms/EmployeeFormModal";
 import { employeeColumns, type Employee } from "./EmployeeColumns";
 import { Button } from "@/components/ui/button";

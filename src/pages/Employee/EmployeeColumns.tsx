@@ -1,5 +1,5 @@
-import type{ ColumnDef } from "@tanstack/react-table";
-import { ActionsColumn } from "@/components/ui/columns";
+import type { ColumnDef } from "@tanstack/react-table";
+import { ActionsColumn } from "@/components/common/columns";
 
 export type Employee = {
   id: string;
@@ -27,5 +27,5 @@ export const employeeColumns: ColumnDef<Employee>[] = [
   { accessorKey: "address", header: "Address" },
   { accessorKey: "shift", header: "Shift" },
   { accessorKey: "role", header: "Role" },
-  ActionsColumn<Employee>(), // ✅ Reusable dropdown column
+  ActionsColumn<Employee>('name'), // ✅ Reusable dropdown column
 ];

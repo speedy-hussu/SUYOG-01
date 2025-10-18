@@ -1,4 +1,4 @@
-import { ActionsColumn } from "@/components/ui/columns";
+import { ActionsColumn } from "@/components/common/columns";
 import type { ColumnDef } from "@tanstack/react-table";
 
 // ✅ Vendor type with relevant fields
@@ -39,5 +39,5 @@ export const vendorColumns: ColumnDef<Vendor>[] = [
       return <span className={color}>{status}</span>;
     },
   },
-  ActionsColumn<Vendor>(),
+  ActionsColumn<Vendor>('vendor_name'),
 ];

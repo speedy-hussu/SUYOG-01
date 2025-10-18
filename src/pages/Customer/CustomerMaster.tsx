@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/common/data-table";
 import { Combobox } from "@/components/common/SelectCombobox";
 import { customerColumns, type Customer } from "./CustomerColumns";
 import Layout from "../Layout";

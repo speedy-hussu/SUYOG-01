@@ -1,7 +1,7 @@
 import * as React from "react";
-import { ingredientColumns, type Ingredient } from "./Columns";
+import { ingredientColumns, type Ingredient } from "./IngredientColumns";
 import Layout from "../Layout";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/common/data-table";
 import { Combobox } from "@/components/common/SelectCombobox";
 import { CustomerFormModal } from "@/components/forms/CustomerFormModal";
 import { Button } from "@/components/ui/button";

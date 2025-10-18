@@ -1,4 +1,4 @@
-import { ActionsColumn } from "@/components/ui/columns";
+import { ActionsColumn } from "@/components/common/columns";
 import type { ColumnDef } from "@tanstack/react-table";
 
 // ✅ Customer type with relevant fields
@@ -39,5 +39,5 @@ export const customerColumns: ColumnDef<Customer>[] = [
       return <span className={color}>{status}</span>;
     },
   },
-  ActionsColumn<Customer>(),
+  ActionsColumn<Customer>("customer_name"),
 ];
