@@ -1,22 +1,22 @@
 import { ActionsColumn } from "@/components/ui/columns";
 import type { ColumnDef } from "@tanstack/react-table";
 
-// ✅ Vendor type with relevant fields
-export type Vendor = {
+// ✅ Customer type with relevant fields
+export type Customer = {
   id: string;
-  vendor_name: string;
+  customer_name: string;
   phone: string;
   order_status: "Pending" | "Processing" | "Completed" | "Cancelled"; // example statuses
 };
 
-export const vendorColumns: ColumnDef<Vendor>[] = [
+export const customerColumns: ColumnDef<Customer>[] = [
   {
     accessorKey: "id",
     header: "ID",
   },
   {
-    accessorKey: "vendor_name",
-    header: "Vendor Name",
+    accessorKey: "customer_name",
+    header: "Customer Name",
   },
   {
     accessorKey: "phone",
@@ -39,5 +39,5 @@ export const vendorColumns: ColumnDef<Vendor>[] = [
       return <span className={color}>{status}</span>;
     },
   },
-  ActionsColumn<Vendor>(),
+  ActionsColumn<Customer>(),
 ];

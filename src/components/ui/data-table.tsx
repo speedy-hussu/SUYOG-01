@@ -1,19 +1,5 @@
 import * as React from "react";
-import type {
-  ColumnDef,
-  SortingState,
-  ColumnFiltersState,
-} from "@tanstack/react-table";
-import { FileUp } from "lucide-react";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
+import type { ColumnDef, SortingState } from "@tanstack/react-table";
 import {
   flexRender,
   getCoreRowModel,
@@ -23,6 +9,9 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -31,100 +20,78 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { CustomerFormModal } from "@/components/forms/CustomerFormModal"; // ✅ your modal component
 
-// Props Type
+/**
+ * Props for the reusable DataTable component
+ */
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  globalFilterKeys?: string[]; // keys used for search
+  placeholder?: string; // search placeholder
+  headerActions?: React.ReactNode; // optional header buttons
+  filters?: React.ReactNode; // optional filter components (dropdowns, etc.)
 }
 
-// ✅ Customer Data Table Component
-export function CustomerDataTable<TData, TValue>({
+/**
+ * Generic DataTable component with filtering, sorting, pagination, and custom actions.
+ */
+export function DataTable<TData, TValue>({
   columns,
   data,
+  globalFilterKeys = [],
+  placeholder = "Search...",
+  headerActions,
+  filters,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
   const [globalFilter, setGlobalFilter] = React.useState("");
 
-  // ✅ Table configuration
   const table = useReactTable({
     data,
     columns,
-    state: {
-      sorting,
-      columnFilters,
-      globalFilter,
-    },
+    state: { sorting, globalFilter },
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    globalFilterFn: "includesString", // simple string matching
+
+    globalFilterFn: (row, _columnId, filterValue) => {
+      if (!filterValue) return true;
+      const search = filterValue.toLowerCase();
+      return globalFilterKeys.some((key) => {
+        const value = row.getValue(key)?.toString().toLowerCase() ?? "";
+        return value.includes(search);
+      });
+    },
   });
 
   return (
-    <div>
-      {/* ✅ Filters and Actions */}
-      <div className="flex py-2 gap-5 items-center">
-        {/* Global Search */}
+    <div className="space-y-3">
+      {/* 🔍 Header Row */}
+      <div className="flex flex-wrap items-center gap-3">
         <Input
-          placeholder="Search by name or phone..."
-          value={globalFilter ?? ""}
+          placeholder={placeholder}
+          value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm"
         />
 
-        {/* Order Status Filter (ShadCN Select) */}
-        <Select
-          value={
-            (table.getColumn("order_status")?.getFilterValue() as string) ??
-            "All"
-          }
-          onValueChange={(value) =>
-            table
-              .getColumn("order_status")
-              ?.setFilterValue(value === "All" ? undefined : value)
-          }
-        >
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="All Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All Status</SelectItem>
-            <SelectItem value="Pending">Pending</SelectItem>
-            <SelectItem value="Processing">Processing</SelectItem>
-            <SelectItem value="Completed">Completed</SelectItem>
-            <SelectItem value="Cancelled">Cancelled</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Add Customer Modal */}
-        <CustomerFormModal />
-
-        {/* Export Button */}
-        <Button className="bg-white  border border-gray-400 text-gray-600">
-          Export
-          <FileUp className="ml-2 text-gray-500 h-4 w-4" />
-        </Button>
+        {filters && <div className="flex gap-2">{filters}</div>}
+        {headerActions && (
+          <div className="flex gap-2 ml-auto">{headerActions}</div>
+        )}
       </div>
 
-      {/* ✅ Scrollable Table */}
-      <ScrollArea className="h-100 ">
+      {/* 📋 Table Section */}
+      <ScrollArea className="h-100">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow key={hg.id}>
+                {hg.headers.map((header) => (
                   <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
@@ -158,7 +125,7 @@ export function CustomerDataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No customers found.
+                  No data found.
                 </TableCell>
               </TableRow>
             )}
@@ -166,8 +133,8 @@ export function CustomerDataTable<TData, TValue>({
         </Table>
       </ScrollArea>
 
-      {/* ✅ Pagination Controls */}
-      <div className="flex items-center justify-end space-x-2 p-2">
+      {/* ⏭ Pagination */}
+      <div className="flex items-center justify-end gap-3 p-2">
         <Button
           variant="outline"
           size="sm"
@@ -176,6 +143,7 @@ export function CustomerDataTable<TData, TValue>({
         >
           Previous
         </Button>
+
         <Button
           variant="outline"
           size="sm"
@@ -184,6 +152,7 @@ export function CustomerDataTable<TData, TValue>({
         >
           Next
         </Button>
+
         <div className="text-sm">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
